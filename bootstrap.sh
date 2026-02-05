@@ -22,7 +22,7 @@ RESTART_SERVICES=(NetworkManager)
 		local real_home=$(eval echo "~${SUDO_USER}")
 		sudo -u "${SUDO_USER}" stow -v -R --adopt -t "${real_home}" home
 		stow -v -R --adopt -t / system
-		log "⚠️ Adopted local configs. Use 'git status' to check changes. Use 'git checkout -- .' to revert."
+		echo "⚠️ Adopted local configs. Use 'git status' to check changes. Use 'git checkout -- .' to revert."
 	}
 
 	setup_services() {
@@ -51,7 +51,7 @@ RESTART_SERVICES=(NetworkManager)
 		deploy_configs
 		setup_services
 
-		log "🎉 Done. Enjoy Linux!"
+		echo "🎉 Done. Enjoy Linux!"
 	}
 
 	main "$@"
