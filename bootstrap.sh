@@ -31,18 +31,22 @@ RESTART_SERVICES=(NetworkManager)
 
 		log "Removing old symlinks..."
 		(cd home && find . -type f) | while read -r f; do
-			target="${real_home}/${f#./}"
-			[ -L "$target" ] && rm -v "$target"
-    	done
+            target="${real_home}/${f#./}"
+            if [[ -L "$target" ]]; then
+                rm -v "$target" || true
+            fi
+        done
 
 		(cd system && find . -type f) | while read -r f; do
-			target="/${f#./}"
-			[ -L "$target" ] && sudo rm -v "$target"
-		done
+            target="/${f#./}"
+            if [[ -L "$target" ]]; then
+                sudo rm -v "$target" || true
+            fi
+        done
 
 		log "Stowing configs..."
-		sudo -u "${SUDO_USER}" stow -v -R --adopt -t "${real_home}" home
-		stow -v -R --adopt -t / system
+		sudo -u "${SUDO_USER}" stow -v -R --adopt --no-folding -t "${real_home}" home
+		stow -v -R --adopt --no-folding -t / system
 		echo "💡 Adopted local configs. Use 'git status' to check changes. Use 'git checkout -- .' to revert."
 	}
 
