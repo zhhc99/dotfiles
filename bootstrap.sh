@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # 初始化 Linux 环境 (dnf only).
-PKGS=(stow git gh keyd iwd)
+PKGS=(stow git gh keyd iwd ibus-rime)
 SERVICES=(keyd iwd)
 RESTART_SERVICES=(NetworkManager)
 
@@ -15,6 +15,15 @@ RESTART_SERVICES=(NetworkManager)
         log "Installing dependencies..."
         command -v dnf &>/dev/null || err "dnf not found."
         dnf install -y "${PKGS[@]}"
+    }
+
+	setup_rime_ice() {
+        local rime_dir=$(eval echo "~${SUDO_USER}/.config/ibus/rime")
+        if [ ! -d "${rime_dir}/.git" ]; then
+			log "Removing Rime default configs and Cloning Rime Ice..."
+            rm -rf "${rime_dir}"
+            sudo -u "${SUDO_USER}" git clone --depth 1 https://github.com/iDvel/rime-ice.git "${rime_dir}"
+        fi
     }
 
 	deploy_configs() {
@@ -61,6 +70,7 @@ RESTART_SERVICES=(NetworkManager)
 
 		cd "$(dirname "$0")"
 		install_pkgs
+		setup_rime_ice
 		deploy_configs
 		setup_services
 
