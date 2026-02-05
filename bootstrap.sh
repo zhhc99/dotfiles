@@ -18,20 +18,33 @@ RESTART_SERVICES=(NetworkManager)
     }
 
 	deploy_configs() {
-		log "Stowing configs..."
 		local real_home=$(eval echo "~${SUDO_USER}")
+
+		log "Removing old symlinks..."
+		(cd home && find . -type f) | while read -r f; do
+			target="${real_home}/${f#./}"
+			[ -L "$target" ] && rm -v "$target"
+    	done
+
+		(cd system && find . -type f) | while read -r f; do
+			target="/${f#./}"
+			[ -L "$target" ] && sudo rm -v "$target"
+		done
+
+		log "Stowing configs..."
 		sudo -u "${SUDO_USER}" stow -v -R --adopt -t "${real_home}" home
 		stow -v -R --adopt -t / system
-		echo "⚠️ Adopted local configs. Use 'git status' to check changes. Use 'git checkout -- .' to revert."
+		echo "💡 Adopted local configs. Use 'git status' to check changes. Use 'git checkout -- .' to revert."
 	}
 
 	setup_services() {
 		log "Enabling services..."
 		for svc in "${SERVICES[@]}"; do
+			echo "Enabling ${svc}..."
 			systemctl enable --now "${svc}" 2>/dev/null || echo "⚠️  Service ${svc} not found."
 		done
 		for svc in "${RESTART_SERVICES[@]}"; do
-            log "Restarting ${svc}..."
+            echo "Restarting ${svc}..."
             systemctl restart "${svc}" 2>/dev/null || true
         done
 	}
