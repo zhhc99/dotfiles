@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 #
 # 初始化 Linux 环境 (dnf only).
-PKGS=(stow git gh keyd iwd ibus-rime)
-SERVICES=(keyd iwd)
+PKGS=(stow git gh keyd iwd ibus-rime chromium)
+REMOVE_PKGS=(firefox gnome-boxes gnome-calendar gnome-characters gnome-connections gnome-contacts gnome-maps gnome-tour gnome-weather malcontent-control mediawriter simple-scan)
+SERVICES=(keyd iwd )
 RESTART_SERVICES=(NetworkManager)
 
 {
@@ -10,6 +11,11 @@ RESTART_SERVICES=(NetworkManager)
 
 	err() { echo "❗ Error: $*" >&2; exit 1; }
 	log() { echo "📜 $*"; }
+
+	remove_pkgs() {
+		log "Removing bloatware..."
+		dnf remove -y "${REMOVE_PKGS[@]}" || true
+	}
 
 	install_pkgs() {
         log "Installing dependencies..."
@@ -73,6 +79,7 @@ RESTART_SERVICES=(NetworkManager)
         fi
 
 		cd "$(dirname "$0")"
+		remove_pkgs
 		install_pkgs
 		setup_rime_ice
 		deploy_configs
