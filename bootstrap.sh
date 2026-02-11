@@ -76,6 +76,11 @@ RESTART_SERVICES=(NetworkManager)
         done
 	}
 
+	post_install() {
+		log "Running post-install tasks..."
+		sudo -u "{SUDO_USER}" ibus restart
+	}
+
 	main() {
 		if [[ $EUID -ne 0 ]]; then
 			echo "🛡️ Need sudo powers to install..."
@@ -93,8 +98,9 @@ RESTART_SERVICES=(NetworkManager)
 		setup_rime_ice
 		deploy_configs
 		setup_services
+		post_install
 
-		echo "🎉 Done. Enjoy Linux!"
+		echo "🎉 Done. Reboot recommended. Enjoy Linux!"
 	}
 
 	main "$@"
