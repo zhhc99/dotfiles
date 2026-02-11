@@ -78,7 +78,7 @@ RESTART_SERVICES=(NetworkManager)
 
 	post_install() {
 		log "Running post-install tasks..."
-		sudo -u "${SUDO_USER}" ibus restart
+		sudo -u "${SUDO_USER}" -E ibus restart
 	}
 
 	main() {
