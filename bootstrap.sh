@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
 # 初始化 Linux 环境 (dnf only).
+COPRS=(alternateved/keyd)
 PKGS=(stow git gh keyd iwd ibus-rime chromium)
 REMOVE_PKGS=(firefox gnome-boxes gnome-calendar gnome-characters gnome-connections gnome-contacts gnome-maps gnome-tour gnome-weather malcontent-control mediawriter simple-scan)
 SERVICES=(keyd iwd )
@@ -11,6 +12,13 @@ RESTART_SERVICES=(NetworkManager)
 
 	err() { echo "❗ Error: $*" >&2; exit 1; }
 	log() { echo "📜 $*"; }
+
+	enable_coprs() {
+		log "Enabling COPR repositories..."
+		for repo in "${COPRS[@]}"; do
+			dnf copr enable -y "$repo"
+		done
+	}
 
 	remove_pkgs() {
 		log "Removing bloatware..."
@@ -80,6 +88,7 @@ RESTART_SERVICES=(NetworkManager)
 
 		cd "$(dirname "$0")"
 		remove_pkgs
+		enable_coprs
 		install_pkgs
 		setup_rime_ice
 		deploy_configs
