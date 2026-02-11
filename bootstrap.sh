@@ -79,7 +79,7 @@ RESTART_SERVICES=(NetworkManager)
 	post_install() {
 		log "Running post-install tasks..."
 		# sudo -u "${SUDO_USER}" -E ibus restart # likely dbus problem
-		echo "To activate Rime now, run: \033[1mibus restart\033[0m"
+		echo "To activate Rime now, run: 'ibus restart'."
 	}
 
 	main() {
