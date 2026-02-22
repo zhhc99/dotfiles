@@ -18,3 +18,18 @@ patch:
   translator/enable_user_dict: false
   translator/enable_sentence: false
   translator/spelling_hints: 0
+
+  engine/translators:
+    - punct_translator
+    - script_translator
+    - lua_translator@*date_translator
+    - lua_translator@*lunar
+    - lua_translator@*uuid
+    - table_translator@custom_phrase
+    # - table_translator@melt_eng       # 英文输入
+    - table_translator@cn_en          # 中英混合词
+    - table_translator@radical_lookup
+    - lua_translator@*unicode
+    - lua_translator@*number_translator
+    - lua_translator@*calc_translator
+    - lua_translator@*force_gc
